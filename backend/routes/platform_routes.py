@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from services.composition_service import get_coach_position
 from models import MAJOR_JUNCTIONS
+from backend.auth import require_api_key
 
 bp = Blueprint('platform', __name__, url_prefix='/api')
 
 @bp.route('/platformposition', methods=['GET'])
+@require_api_key
 def get_position():
     train_number = request.args.get('train_number')
     coach = request.args.get('coach')
@@ -42,6 +44,7 @@ def get_position():
     return jsonify(response), 200
 
 @bp.route('/platformguide/<train_number>/<coach_id>/<station_code>', methods=['GET'])
+@require_api_key
 def get_guide(train_number, coach_id, station_code):
     pos_data = get_coach_position(train_number, coach_id, station_code=station_code)
     if not pos_data:
